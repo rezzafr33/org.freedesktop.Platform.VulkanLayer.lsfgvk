@@ -29,8 +29,3 @@ jobs:
       with:
         bundle: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}.flatpak
         manifest-path: org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: lsfg-vk-flatpak-${{ matrix.runtime-version }}
-        path: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}.flatpak
