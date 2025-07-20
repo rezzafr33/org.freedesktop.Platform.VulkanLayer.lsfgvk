@@ -1,0 +1,59 @@
+id: org.freedesktop.Platform.VulkanLayer.lsfgvk
+branch: '{{RUNTIME_VERSION}}'
+runtime: org.freedesktop.Platform
+runtime-version: '{{RUNTIME_VERSION}}'
+sdk: org.freedesktop.Sdk
+build-extension: true
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.{{LLVM_VERSION}}
+
+build-options:
+  prefix: /usr/lib/extensions/vulkan/lsfgvk
+  prepend-ld-library-path: /usr/lib/sdk/{{LLVM_VERSION}}/lib
+  prepend-path: /usr/lib/sdk/{{LLVM_VERSION}}/bin
+  prepend-pkg-config-path: /usr/lib/extensions/vulkan/lsfgvk/share/pkgconfig
+  env:
+    CC: clang
+    CXX: clang++
+    CPLUS_INCLUDE_PATH: /usr/lib/extensions/vulkan/lsfgvk/include
+    C_INCLUDE_PATH: /usr/lib/extensions/vulkan/lsfgvk/include
+
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - /share/cmake
+  - /share/pkgconfig
+  - /share/vulkan/registry
+
+modules:
+  - name: lsfg-vk
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/PancakeTAS/lsfg-vk.git
+        branch: develop
+      - type: patch
+        path: vk_layer_library_path.patch
+    build-commands:
+      - cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=${FLATPAK_DEST} -DCMAKE_BUILD_TYPE=Release -DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,lazy
+      - ninja -C build
+      - ninja -C build install
+
+    modules:
+      - name: vulkan-headers
+        buildsystem: cmake-ninja
+        builddir: true
+        sources:
+          - type: git
+            url: https://github.com/KhronosGroup/Vulkan-Headers.git
+            tag: &vulkan-sdk vulkan-sdk-1.4.313
+
+      - name: spirv-headers
+        buildsystem: cmake-ninja
+        builddir: true
+        sources:
+          - type: git
+            url: https://github.com/KhronosGroup/Spirv-Headers.git
+            tag: *vulkan-sdk
