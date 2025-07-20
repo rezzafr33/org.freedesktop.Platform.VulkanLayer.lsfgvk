@@ -24,8 +24,9 @@ jobs:
         submodules: true
     - name: Generate manifest
       run: |
+        cd flatpak
         make RUNTIME_VERSION=${{ matrix.runtime-version }}
     - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}.flatpak
-        manifest-path: org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
+        manifest-path: flatpak/org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
