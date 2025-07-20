@@ -1,0 +1,36 @@
+name: Build lsfg-vk on Flatpak
+on: [push]
+
+jobs:
+  flatpak:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runtime-version: [23.08, 24.08]
+        include:
+          - runtime-version: 23.08
+            llvm-version: llvm18
+            container-image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-23.08
+          - runtime-version: 24.08
+            llvm-version: llvm20
+            container-image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+    container:
+      image: ${{ matrix.container-image }}
+      options: --privileged
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Generate manifest
+      run: |
+        make RUNTIME_VERSION=${{ matrix.runtime-version }}
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}.flatpak
+        manifest-path: org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: lsfg-vk-flatpak-${{ matrix.runtime-version }}
+        path: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}.flatpak
