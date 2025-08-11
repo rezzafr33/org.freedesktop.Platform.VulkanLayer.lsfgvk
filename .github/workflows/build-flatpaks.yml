@@ -1,6 +1,5 @@
 name: Build lsfg-vk on Flatpak
 on: workflow_dispatch
-
 jobs:
   flatpak:
     runs-on: ubuntu-latest
@@ -17,15 +16,15 @@ jobs:
       image: ${{ matrix.container-image }}
       options: --privileged
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: true
-    - name: Generate manifest
-      run: |
-        cd flatpak
-        make RUNTIME_VERSION=${{ matrix.runtime-version }} BRANCH=${{ matrix.branch }}
-    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
-      with:
-        bundle: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}-${{ matrix.branch | replace('/', '-') }}.flatpak
-        manifest-path: flatpak/org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Generate manifest
+        run: |
+          cd flatpak
+          make RUNTIME_VERSION=${{ matrix.runtime-version }} BRANCH=${{ matrix.branch }}
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: org.freedesktop.Platform.VulkanLayer.lsfgvk-${{ matrix.runtime-version }}-${{ replace(matrix.branch, '/', '_') }}.flatpak
+          manifest-path: flatpak/org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
