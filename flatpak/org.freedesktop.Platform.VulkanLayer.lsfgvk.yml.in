@@ -33,7 +33,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/PancakeTAS/lsfg-vk.git
-        branch: develop
+        branch: {{BRANCH}}
       - type: patch
         path: vk_layer_library_path.patch
     build-commands:

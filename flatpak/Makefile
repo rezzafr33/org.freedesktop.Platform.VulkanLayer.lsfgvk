@@ -2,6 +2,7 @@ TEMPLATE = org.freedesktop.Platform.VulkanLayer.lsfgvk.yml.in
 OUTPUT = org.freedesktop.Platform.VulkanLayer.lsfgvk.yml
 
 RUNTIME_VERSION ?= 24.08
+BRANCH ?= develop
 
 ifeq ($(RUNTIME_VERSION),23.08)
 LLVM_VERSION = llvm18
@@ -16,6 +17,7 @@ all: $(OUTPUT)
 $(OUTPUT): $(TEMPLATE)
 	@sed -e 's/{{RUNTIME_VERSION}}/$(RUNTIME_VERSION)/g' \
 		-e 's/{{LLVM_VERSION}}/$(LLVM_VERSION)/g' \
+		-e 's/{{BRANCH}}/$(BRANCH)/g' \
 		$(TEMPLATE) > $(OUTPUT)
 
 clean:
