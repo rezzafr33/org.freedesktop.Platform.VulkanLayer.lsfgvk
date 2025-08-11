@@ -17,7 +17,7 @@ all: $(OUTPUT)
 $(OUTPUT): $(TEMPLATE)
 	@sed -e 's/{{RUNTIME_VERSION}}/$(RUNTIME_VERSION)/g' \
 		-e 's/{{LLVM_VERSION}}/$(LLVM_VERSION)/g' \
-		-e 's/{{BRANCH}}/$(BRANCH)/g' \
+		-e 's|{{BRANCH}}|$(BRANCH)|g' \
 		$(TEMPLATE) > $(OUTPUT)
 
 clean:
